@@ -1,26 +1,36 @@
-function getBooks(done) {
-    // Se conecta a tu propia API corriendo en el puerto 3000
-    fetch("http://localhost:3000/api/libros")
-        .then(response => response.json())
-        .then(data => {
-            done(data);
-        })
-        .catch(error => console.error("Error al obtener los libros:", error));
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const contenedor = document.getElementById('libros-container');
 
-getBooks(data => {
-    data.results.forEach(libro => {
-        const article = document.createRange().createContextualFragment(`
-            <article>
-                <div class="img-container">
-                    <img src="${libro.imagen}" alt="${libro.titulo}">
-                </div>
-                <h2>${libro.titulo}</h2>
-                <p>Autor: ${libro.autor}</p>
-            </article>
-        `);
+  // Petición a la API usando ruta relativa
+  fetch('/api/libros')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error en la respuesta de la red');
+      }
+      return response.json();
+    })
+    .then(data => {
+      // Limpiar el contenedor
+      contenedor.innerHTML = '';
 
-        const main = document.querySelector("main");
-        main.appendChild(article);
+      // Recorrer los libros y renderizar las tarjetas
+      data.results.forEach(libro => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        card.innerHTML = `
+          <div class="img-container">
+            <img src="${libro.imagen}" alt="${libro.titulo}">
+          </div>
+          <h3>${libro.titulo}</h3>
+          <p>Autor: ${libro.autor}</p>
+        `;
+
+        contenedor.appendChild(card);
+      });
+    })
+    .catch(error => {
+      console.error('Error al cargar la API:', error);
+      contenedor.innerHTML = '<p>Error al cargar el catálogo de libros.</p>';
     });
 });
