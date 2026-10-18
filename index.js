@@ -8,7 +8,10 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Datos con portadas reales de libros
+// Servir archivos estáticos (index.html, estilo.css, script.js)
+app.use(express.static(__dirname));
+
+// Arreglo de libros con portadas reales
 const libros = [
   {
     id: 1,
